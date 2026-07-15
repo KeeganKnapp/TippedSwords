@@ -25,13 +25,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     && rm -rf /var/lib/apt/lists/* \
     && curl -fsSL https://claude.ai/install.sh | bash
 ENV PATH="/root/.local/bin:${PATH}"
+# Claude CLI refuses --dangerously-skip-permissions / defaultMode:
+# bypassPermissions when running as root/UID 0, so `sandbox.sh claude` runs
+# as this non-root user instead (gradlew build/test below is unaffected and
+# still runs as root). UID/GID are passed in at build time to match the
+# host user, since sandbox.sh runs the container with --userns=keep-id.
+RUN chmod o+x /root && chmod -R o+rX /root/.local
+ARG HOST_UID=1000
+ARG HOST_GID=1000
+RUN groupadd -g "$HOST_GID" claude \
+    && useradd -m -u "$HOST_UID" -g "$HOST_GID" -s /bin/bash claude
 
-# Baked default for the container's own ~/.claude (never the host's):
-# skip permission prompts. sandbox.sh mounts a named volume over this
-# directory, which Podman seeds from the image on first use, so this file
-# becomes the volume's starting state and persists from there.
-RUN mkdir -p /root/.claude \
-    && printf '{\n  "permissions": {\n    "defaultMode": "bypassPermissions"\n  }\n}\n' > /root/.claude/settings.json
+# Baked default for the claude user's ~/.claude (never the host's): skip
+# permission prompts. sandbox.sh mounts a named volume over this directory,
+# which Podman seeds from the image on first use, so this file becomes the
+# volume's starting state and persists from there.
+RUN mkdir -p /home/claude/.claude \
+    && printf '{\n  "permissions": {\n    "defaultMode": "bypassPermissions"\n  }\n}\n' > /home/claude/.claude/settings.json \
+    && chown -R claude:claude /home/claude/.claude
+
+# Pre-create the Gradle cache mount point owned by the claude user too, so
+# if `claude` shells out to ./gradlew it can write to it (the named volume
+# is seeded from this directory's ownership on first mount).
+RUN mkdir -p /workspace/.gradle-sandbox && chown -R claude:claude /workspace/.gradle-sandbox
 
 ENTRYPOINT ["./gradlew", "--no-daemon"]
 CMD ["build"]
