@@ -8,11 +8,13 @@ import com.cobblestoner.items.ModItems;
 
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -27,9 +29,23 @@ public class VialFillingRecipe extends CustomRecipe {
     public static final VialFillingRecipe INSTANCE = new VialFillingRecipe();
     public static final MapCodec<VialFillingRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, VialFillingRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
-    public static final RecipeSerializer<VialFillingRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+    public static final RecipeSerializer<VialFillingRecipe> SERIALIZER = new RecipeSerializer<>() {
+        @Override
+        public MapCodec<VialFillingRecipe> codec() {
+            return MAP_CODEC;
+        }
+
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, VialFillingRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+    };
 
     private static final Ingredient VIAL = Ingredient.of(ModItems.VIAL);
+
+    public VialFillingRecipe() {
+        super(CraftingBookCategory.MISC);
+    }
 
     @Override
     public boolean matches(CraftingInput input, Level level) {
@@ -57,7 +73,7 @@ public class VialFillingRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input) {
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
         Optional<CoatingData> coating = CoatingManager.fromPotion(input.getItem(1, 1));
         if (coating.isEmpty()) return ItemStack.EMPTY;
 

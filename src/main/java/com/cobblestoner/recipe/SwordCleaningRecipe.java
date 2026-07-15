@@ -6,11 +6,13 @@ import com.cobblestoner.CoatingManager;
 
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -26,7 +28,21 @@ public class SwordCleaningRecipe extends CustomRecipe {
     public static final SwordCleaningRecipe INSTANCE = new SwordCleaningRecipe();
     public static final MapCodec<SwordCleaningRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, SwordCleaningRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
-    public static final RecipeSerializer<SwordCleaningRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+    public static final RecipeSerializer<SwordCleaningRecipe> SERIALIZER = new RecipeSerializer<>() {
+        @Override
+        public MapCodec<SwordCleaningRecipe> codec() {
+            return MAP_CODEC;
+        }
+
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, SwordCleaningRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+    };
+
+    public SwordCleaningRecipe() {
+        super(CraftingBookCategory.MISC);
+    }
 
     @Override
     public boolean matches(CraftingInput input, Level level) {
@@ -34,7 +50,7 @@ public class SwordCleaningRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input) {
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
         return findSword(input).map(sword -> {
             ItemStack result = sword.copy();
             result.setCount(1);

@@ -3,7 +3,7 @@ package com.cobblestoner.items;
 import com.cobblestoner.entity.ThrownVialEntity;
 
 import eu.pb4.polymer.core.api.item.PolymerItem;
-import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+import xyz.nucleoid.packettweaker.PacketContext;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

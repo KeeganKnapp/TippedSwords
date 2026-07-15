@@ -7,7 +7,7 @@ import com.cobblestoner.CoatingManager;
 import com.cobblestoner.items.ModItems;
 
 import eu.pb4.polymer.core.api.entity.PolymerEntity;
-import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+import xyz.nucleoid.packettweaker.PacketContext;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;

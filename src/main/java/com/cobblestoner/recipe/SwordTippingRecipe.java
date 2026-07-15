@@ -11,10 +11,12 @@ import com.cobblestoner.items.ModItems;
 
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -29,10 +31,24 @@ public class SwordTippingRecipe extends CustomRecipe {
     public static final SwordTippingRecipe INSTANCE = new SwordTippingRecipe();
     public static final MapCodec<SwordTippingRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, SwordTippingRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
-    public static final RecipeSerializer<SwordTippingRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+    public static final RecipeSerializer<SwordTippingRecipe> SERIALIZER = new RecipeSerializer<>() {
+        @Override
+        public MapCodec<SwordTippingRecipe> codec() {
+            return MAP_CODEC;
+        }
+
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, SwordTippingRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+    };
 
     private static final int MIN_VIALS = 1;
     private static final int MAX_VIALS = CoatingManager.MAX_VIALS_PER_COATING;
+
+    public SwordTippingRecipe() {
+        super(CraftingBookCategory.MISC);
+    }
 
     @Override
     public boolean matches(CraftingInput input, Level level) {
@@ -40,7 +56,7 @@ public class SwordTippingRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input) {
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
         Optional<Merge> merge = findMerge(input);
         if (merge.isEmpty()) return ItemStack.EMPTY;
 
