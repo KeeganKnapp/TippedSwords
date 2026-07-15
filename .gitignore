@@ -31,6 +31,9 @@ bin/
 # fabric
 
 run/
+.fabric/
+config/
+logs/
 
 # java
 
