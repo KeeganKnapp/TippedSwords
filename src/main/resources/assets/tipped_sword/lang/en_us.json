@@ -1,0 +1,8 @@
+{
+	"item.tipped_sword.vial": "Vial",
+	"tipped_sword.vial.of": "Vial of %s",
+	"tipped_sword.effect.wind_charge": "Windcharged",
+	"tipped_sword.effect.fire_charge": "Firecharged",
+	"tipped_sword.tooltip.hits": "%s hits",
+	"tipped_sword.tooltip.hits_duration": "%1$s hits, %2$s each"
+}

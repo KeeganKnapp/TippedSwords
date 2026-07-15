@@ -1,0 +1,53 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "minecraft:item/iron_sword"
+      },
+      {
+        "type": "minecraft:condition",
+        "property": "minecraft:has_component",
+        "component": "minecraft:potion_contents",
+        "on_true": {
+          "type": "minecraft:model",
+          "model": "tipped_sword:item/coating_overlay",
+          "tints": [
+            {
+              "type": "minecraft:potion",
+              "default": -1
+            }
+          ]
+        },
+        "on_false": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:condition",
+        "property": "minecraft:has_component",
+        "component": "tipped_sword:has_fire_charge",
+        "on_true": {
+          "type": "minecraft:model",
+          "model": "tipped_sword:item/fire_charge_overlay"
+        },
+        "on_false": {
+          "type": "minecraft:empty"
+        }
+      },
+      {
+        "type": "minecraft:condition",
+        "property": "minecraft:has_component",
+        "component": "tipped_sword:has_wind_charge",
+        "on_true": {
+          "type": "minecraft:model",
+          "model": "tipped_sword:item/wind_charge_overlay"
+        },
+        "on_false": {
+          "type": "minecraft:empty"
+        }
+      }
+    ]
+  }
+}
