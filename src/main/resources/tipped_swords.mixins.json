@@ -1,9 +1,10 @@
 {
 	"required": true,
-	"package": "com.example.mixin",
+	"package": "com.cobblestoner.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
-		"ExampleMixin"
+		"TippedSwordsAttackMixin",
+		"TippedSwordsSweepMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

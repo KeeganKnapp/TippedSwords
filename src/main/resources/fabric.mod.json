@@ -1,31 +1,27 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "tipped_sword",
 	"version": "${version}",
-	"name": "Example Mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Tipped Swords",
+	"description": "Coat your sword with potions, Wind Charges, or Fire Charges - fill vials from brewed potions, tip a sword with up to three, and land the effect on every hit.",
 	"authors": [
-		"Me!"
+		"SuplexGod"
 	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
+	"license": "MIT",
+	"icon": "assets/tipped_sword/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+			"com.cobblestoner.TippedSwords"
 		],
 		"client": [
-			"com.example.client.ExampleModClient"
+			"com.cobblestoner.client.TippedSwordsClient"
 		]
 	},
 	"mixins": [
-		"modid.mixins.json",
+		"tipped_swords.mixins.json",
 		{
-			"config": "modid.client.mixins.json",
+			"config": "tipped_swords.client.mixins.json",
 			"environment": "client"
 		}
 	],
