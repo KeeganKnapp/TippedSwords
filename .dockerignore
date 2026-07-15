@@ -1,0 +1,14 @@
+.git
+.gradle
+.gradle-sandbox
+build
+out
+bin
+run
+logs
+mods
+.claude
+.idea
+.vscode
+.settings
+*.iml
