@@ -13,7 +13,6 @@ import com.cobblestoner.items.ModItems;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -22,7 +21,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.StringUtil;
-import net.minecraft.util.Unit;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -31,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.TooltipDisplay;
 
@@ -122,8 +121,7 @@ public class CoatingManager {
 
         if (coatings.isEmpty()) {
             stack.remove(ModComponents.COATINGS);
-            stack.remove(ModComponents.HAS_FIRE_CHARGE);
-            stack.remove(ModComponents.HAS_WIND_CHARGE);
+            stack.remove(DataComponents.CUSTOM_MODEL_DATA);
             stack.remove(DataComponents.LORE);
             stack.remove(DataComponents.POTION_CONTENTS);
             stack.remove(DataComponents.TOOLTIP_DISPLAY);
@@ -136,11 +134,20 @@ public class CoatingManager {
             stack.set(DataComponents.LORE, new ItemLore(buildTooltipLines(coatings)));
 
             // Fire/Wind Charge coatings get their own dedicated texture layer (see
-            // fire_charge_overlay/wind_charge_overlay item models) selected by these
-            // presence-only markers, independent of whether the sword also carries a
-            // potion-tinted coating.
-            setOrRemove(stack, ModComponents.HAS_FIRE_CHARGE, hasType(coatings, CoatingType.FIRE_CHARGE));
-            setOrRemove(stack, ModComponents.HAS_WIND_CHARGE, hasType(coatings, CoatingType.WIND_CHARGE));
+            // fire_charge_overlay/wind_charge_overlay item models), selected by
+            // CUSTOM_MODEL_DATA flags rather than a custom component: a real vanilla
+            // client has no way to know about a modded DataComponentType, so an item
+            // model "has_component" condition referencing one fails to parse entirely
+            // and the whole item falls back to the missing-texture model. flags[0] is
+            // fire, flags[1] is wind - see assets/minecraft/items/*_sword.json.
+            boolean hasFireCharge = hasType(coatings, CoatingType.FIRE_CHARGE);
+            boolean hasWindCharge = hasType(coatings, CoatingType.WIND_CHARGE);
+            if (hasFireCharge || hasWindCharge) {
+                stack.set(DataComponents.CUSTOM_MODEL_DATA,
+                        new CustomModelData(List.of(), List.of(hasFireCharge, hasWindCharge), List.of(), List.of()));
+            } else {
+                stack.remove(DataComponents.CUSTOM_MODEL_DATA);
+            }
 
             // Only set POTION_CONTENTS (and hide it from the tooltip) when there's an
             // actual potion effect to tint with - otherwise (a sword coated purely with
@@ -161,14 +168,6 @@ public class CoatingManager {
                 stack.set(DataComponents.ITEM_NAME, vialName(coatings.get(0)));
                 stack.set(DataComponents.MAX_STACK_SIZE, FILLED_VIAL_STACK_SIZE);
             }
-        }
-    }
-
-    private static void setOrRemove(ItemStack stack, DataComponentType<Unit> component, boolean present) {
-        if (present) {
-            stack.set(component, Unit.INSTANCE);
-        } else {
-            stack.remove(component);
         }
     }
 

@@ -26,8 +26,8 @@
       },
       {
         "type": "minecraft:condition",
-        "property": "minecraft:has_component",
-        "component": "tipped_sword:has_fire_charge",
+        "property": "minecraft:custom_model_data",
+        "index": 0,
         "on_true": {
           "type": "minecraft:model",
           "model": "tipped_sword:item/fire_charge_overlay"
@@ -38,8 +38,8 @@
       },
       {
         "type": "minecraft:condition",
-        "property": "minecraft:has_component",
-        "component": "tipped_sword:has_wind_charge",
+        "property": "minecraft:custom_model_data",
+        "index": 1,
         "on_true": {
           "type": "minecraft:model",
           "model": "tipped_sword:item/wind_charge_overlay"
