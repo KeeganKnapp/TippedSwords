@@ -2,6 +2,8 @@ package com.cobblestoner.entity;
 
 import com.cobblestoner.TippedSwords;
 
+import eu.pb4.polymer.core.api.entity.PolymerEntityUtils;
+
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -21,6 +23,9 @@ public class ModEntities {
     );
 
     public static void register() {
-        // entity type registered via static field above
+        // Unlike PolymerItem, implementing PolymerEntity on ThrownVialEntity doesn't by
+        // itself exclude the entity TYPE from Fabric's registry sync - vanilla clients
+        // still get offered "tipped_sword:thrown_vial" and reject it. This opts it out.
+        PolymerEntityUtils.registerType(THROWN_VIAL);
     }
 }

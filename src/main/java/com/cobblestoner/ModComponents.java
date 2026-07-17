@@ -2,6 +2,8 @@ package com.cobblestoner;
 
 import java.util.List;
 
+import eu.pb4.polymer.core.api.other.PolymerComponent;
+
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -40,6 +42,8 @@ public class ModComponents {
     );
 
     public static void register() {
-        // components registered via static fields above
+        // Custom DataComponentType entries are otherwise offered to vanilla clients as
+        // unknown registry entries and rejected during registry sync. This opts them out.
+        PolymerComponent.registerDataComponent(COATINGS, HAS_FIRE_CHARGE, HAS_WIND_CHARGE);
     }
 }
